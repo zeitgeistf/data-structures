@@ -37,13 +37,15 @@ treeMethods.contains = function(target) {
 			isFound = true;
 		}
 
+		if (!isFound) {
+			tree.children.forEach(function(element){
+				//this.contains(element);
+				containsInner(element);
+			});			
+		}
+
 		// go down to the children array, loop through and compare with each
 		// child's value
-		tree.children.forEach(function(element){
-			//this.contains(element);
-			containsInner(element);
-	
-		});
 
 	}
 
