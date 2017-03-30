@@ -1,19 +1,56 @@
 var Tree = function(value) {
-  var newTree = {};
+
+  console.log('*** NEW TREE ***');
+
+  var newTree = Object.create(treeMethods);
   newTree.value = value;
 
   // your code here
-  newTree.children = null;  // fix me
+  newTree.children = [];  // fix me
 
   return newTree;
 };
 
 var treeMethods = {};
 
-treeMethods.addChild = function(value) {
+treeMethods.addChild = function(value) { 
+
+	// create a new tree
+	var newChildTree = new Tree(value);
+	// you add the new tree to its parent tree's children array
+	this.children.push(newChildTree);
+
 };
 
+
+
 treeMethods.contains = function(target) {
+
+	var isFound = false;
+
+	var originalTree = this;
+
+	var containsInner = function(tree) {
+
+		// compare if the target matches with the value of current tree
+		if (tree.value === target){
+			isFound = true;
+		}
+
+		// go down to the children array, loop through and compare with each
+		// child's value
+		tree.children.forEach(function(element){
+			//this.contains(element);
+			containsInner(element);
+	
+		});
+
+	}
+
+	containsInner(originalTree);
+
+	return isFound;
+
 };
 
 
