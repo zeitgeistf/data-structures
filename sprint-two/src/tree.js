@@ -1,7 +1,5 @@
 var Tree = function(value) {
 
-  console.log('*** NEW TREE ***');
-
   var newTree = Object.create(treeMethods);
   newTree.value = value;
 
