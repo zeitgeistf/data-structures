@@ -74,20 +74,20 @@ Graph.prototype.addEdge = function(fromNode, toNode) {
 // Remove an edge between any two specified (by value) nodes.
 Graph.prototype.removeEdge = function(fromNode, toNode) {
 
-	var graphNodes = this.nodes;
+	// var graphNodes = this.nodes;
 
 	var deleteEdge = function(node1, node2) {
 
 		// find the index of the edge
-		var index = graphNodes[node1].indexOf(node2);
+		var index = this.nodes[node1].indexOf(node2);
 		// put first item of the array into temp
-		var temp = graphNodes[node1][0];
+		var temp = this.nodes[node1][0];
 		// set the head as the edge index
-		graphNodes[node1][0] = graphNodes[node1][index];
+		this.nodes[node1][0] = this.nodes[node1][index];
 		// put head value into where the target old position was
-		graphNodes[node1][index] = temp;
+		this.nodes[node1][index] = temp;
 		// use shift method to delete the first item, which is the edge index
-		graphNodes[node1].shift();
+		this.nodes[node1].shift();
 
 	}
 
@@ -97,8 +97,8 @@ Graph.prototype.removeEdge = function(fromNode, toNode) {
 		// check if edge exists
 		if(this.hasEdge(fromNode, toNode)){
 
-			deleteEdge(fromNode, toNode);
-			deleteEdge(toNode, fromNode);
+			deleteEdge.call(this, fromNode, toNode);
+			deleteEdge.call(this, toNode, fromNode);
 
 		}
 	}

@@ -26,8 +26,6 @@ treeMethods.contains = function(target) {
 
 	var isFound = false;
 
-	var originalTree = this;
-
 	var containsInner = function(tree) {
 
 		// compare if the target matches with the value of current tree
@@ -47,7 +45,7 @@ treeMethods.contains = function(target) {
 
 	}
 
-	containsInner(originalTree);
+	containsInner(this);
 
 	return isFound;
 
