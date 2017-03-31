@@ -10,20 +10,13 @@ var HashTable = function() {
 
 HashTable.prototype.insert = function(k, v) {
 
-  console.log('==> Before insert count: ' + this._count + ' | insert: ' + k + ', ' + v);
-
   var index = getIndexBelowMaxForKey(k, this._limit);
   //this._storage.set(index, v);
   var objInsert = this._storage.get(index);
-  console.log(objInsert);
-
 
   if (objInsert !== undefined){
     if (objInsert.some(function(tuple){ return tuple[0] === k; })) {
 
-      // search for index of tuple
-      // by default, we have not found the tuple yet
-      // search for index of tuple
       for (var i = 0; i < objInsert.length; i++){
         if (objInsert[i][0] === k){
           objInsert[i] = [k, v];
@@ -44,13 +37,26 @@ HashTable.prototype.insert = function(k, v) {
   // resize here
   if (this._count > (0.75 * this._limit)){
 
+    var newHashTable = this.resize(this, this._limit * 2);
+
+    this._storage = newHashTable._storage;
+    this._limit = newHashTable._limit;
+    this._count = newHashTable._count;
+
+  }
+
+};
+
+
+HashTable.prototype.resize = function (oldHT, newSize) {
+
     var newHashTable = new HashTable();
 
-    newHashTable._storage = LimitedArray(this._limit * 2);
-    newHashTable._limit = this._limit * 2;
+    newHashTable._storage = LimitedArray(newSize);
+    newHashTable._limit = newSize;
 
     // hashBucket = storage[index]
-    this._storage.each(function(hashBucket) {
+    oldHT._storage.each(function(hashBucket) {
       // each hashBucket is an array
       // iterate over this array
       if (hashBucket !== undefined){
@@ -59,20 +65,12 @@ HashTable.prototype.insert = function(k, v) {
         });
       }
 
-    });
+    });  
 
-    this._storage = newHashTable._storage;
-    this._limit = newHashTable._limit;
-    this._count = newHashTable._count;
+    return newHashTable;
 
-  }
+}
 
-
-
-  console.log('== After insert count: ' + this._count);
-  console.log(objInsert);
-
-};
 
 HashTable.prototype.retrieve = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
@@ -99,11 +97,8 @@ HashTable.prototype.retrieve = function(k) {
 
 HashTable.prototype.remove = function(k) {
 
-  console.log('--- Before remove count: ' + this._count + ' | remove: ' + k);
-
   var index = getIndexBelowMaxForKey(k, this._limit);
   var objRemove = this._storage.get(index);
-  console.log(objRemove);
   
   if (objRemove !== undefined){
 
@@ -119,8 +114,16 @@ HashTable.prototype.remove = function(k) {
   }
   this._storage.set(index, objRemove);
 
-  console.log('--- After remove count: ' + this._count);
-  console.log(objRemove);
+  // resize here
+  if (this._count < (0.25 * this._limit)){
+
+    var newHashTable = this.resize(this, this._limit / 2);
+
+    this._storage = newHashTable._storage;
+    this._limit = newHashTable._limit;
+    this._count = newHashTable._count;
+
+  }
 
 };
 
@@ -128,7 +131,8 @@ HashTable.prototype.remove = function(k) {
 
 /*
  * Complexity: What is the time complexity of the above functions?
- * Constant time: O(1) for all functions
+ * Constant time: O(1) for all functions if no resizing needed.
+ * If resizing needed (for insert or remove), then O(n)
  */
 
 
