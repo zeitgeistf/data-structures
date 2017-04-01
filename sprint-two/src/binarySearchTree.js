@@ -73,6 +73,71 @@ var BinarySearchTree = function(value) {
 
 	};
 
+	bst.print = function() {
+
+		var depth = 0;
+		var printObj = [['[' + this.value + ']']];
+
+		var addTrees = [this.left, this.right];
+
+		while (addTrees.some(x => x !== null)) {
+			depth++;
+			var addNodes = [];
+			addTrees.forEach(function(x) {
+				if (x === null) {
+					addNodes.push(' -- ');
+				} else {
+					var space = '';
+					if (x.value < 10) space = ' ';
+					addNodes.push('[' + space + x.value + ']');
+				}
+			});
+
+			var lines = [];
+			addNodes.forEach(function (x, i, array) {
+				(i % 2) === 0 ? lines.push('  / ') : lines.push(' \\  ');
+			});
+
+			printObj.push(lines);
+			printObj.push(addNodes);
+
+			var newChildren = [];
+			addTrees.forEach(function (x) {
+				if( x === null ) {
+					newChildren.push(null);
+					newChildren.push(null);
+				} else {
+					newChildren.push(x.left);
+					newChildren.push(x.right);
+				}
+			});
+
+			addTrees = newChildren;
+
+		}
+
+		var length = Math.pow(2, depth);
+
+		printObj.forEach(x => {
+			var xCount = x.length;
+			var spaces = 4 * (length - xCount) / (xCount + 1);
+			var spacing = '';
+			for (var i = 0; i < spaces; i++) {
+				spacing += ' ';
+			}
+			var newX = [];
+			x.forEach(y => {
+				newX.push(spacing);
+				newX.push(y);
+			});
+			newX.push(spacing);
+
+			console.log(newX.join(''));
+		});// console.log(x.join('  ')));
+
+
+	}
+
 	return bst;
 
 };

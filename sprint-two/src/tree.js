@@ -51,6 +51,9 @@ treeMethods.contains = function(target) {
 
 };
 
+treeMethods.print = function() {
+
+};
 
 
 /*

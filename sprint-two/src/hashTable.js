@@ -49,7 +49,6 @@ HashTable.prototype.insert = function(k, v) {
 
 
 HashTable.prototype.resize = function (oldHT, newSize) {
-
     var newHashTable = new HashTable();
 
     newHashTable._storage = LimitedArray(newSize);
