@@ -42,6 +42,38 @@ var LinkedList = function() {
 
   };
 
+  list.print = function() {
+    // '{' + list.value +':' + list.next + '}
+    // [head][tail] -> null
+    // [head][1] -> [2] -> [tail][3] -> null
+    // (head)[1] -> [2](tail) -> null
+    var output = '';
+    // LL is empty
+    if(this.head === null) {
+      output = '(head)(tail) -> null';
+    }
+    else if (this.head === this.tail) {
+      output = '(head)[' + this.head.value + '](tail) -> null';
+    }
+    else {
+      output = '(head)[' + this.head.value +'] ';
+
+      var nextNode = this.head.next;
+
+      while (nextNode !== null) {
+        output += '-> [' + nextNode.value + '] ';
+        nextNode = nextNode.next; 
+      }
+
+      output += '(tail) -> null';
+      // Current:    "(head)[1] -> [2] -> [3] ->"
+      // Objective:  "(head)[1] -> [2] -> [3](tail) -> null"
+    }
+    console.log(output);
+
+  }
+
+
   return list;
 };
 

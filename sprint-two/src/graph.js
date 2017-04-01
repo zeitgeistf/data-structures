@@ -122,10 +122,70 @@ Graph.prototype.forEachNode = function(cb) {
 		cb(key);
 	}
 
+} ;
+
+Graph.prototype.print = function() {
+	
+	var arr = [] ;
+	for (var key in this.nodes) {
+		arr.push(key);
+	}
+
+	console.log(arr.join(' | '));
+
+	var output = '';
+	for (var key in this.nodes) {
+		output = key + ' : ';
+
+		for (var i = 0; i < arr.length; i++){
+			if(this.nodes[key].includes(eval(arr[i]))) {
+				output += 'X';
+			}
+			else {
+				output += ' ';
+			}
+		}
+		console.log(output);
+		output = '';
+	}
+
 };
 
 /*
  * Complexity: What is the time complexity of the above functions?
  */
+
+
+ // Run Graph tests
+
+
+ function runGraphTest(count) {
+ 	var g = new Graph();
+
+ 	var array = [];
+
+ 	for (var i = 0; i < count; i++) {
+ 		var x = Math.floor(Math.random()*100) + 1;
+ 		while (array.includes(x)) {
+ 			x = Math.floor(Math.random()*100) + 1;
+ 		} 
+ 		array.push(x);
+ 	 	g.addNode(x);
+ 	}
+
+ 	for (var i = 0; i < count * 0.75; i++) {
+ 		var x = Math.floor(Math.random() * count);
+ 		var y = Math.floor(Math.random() * count);
+
+ 		while (x === y) {
+			y = Math.floor(Math.random() * count); 			
+ 		}
+
+ 		g.addEdge(x,y);
+
+ 	}
+
+ 	g.print();
+ }
 
 

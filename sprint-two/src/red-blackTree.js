@@ -251,19 +251,20 @@ var RedBlackTree = function(value, color, parent) {
 
                 var uncle = grandparent.left;
 
-                if (grandparent.left === parentNode) {
-                    uncle = grandparent.right;
+                if (grandparent.left === parentNode) uncle = grandparent.right;
             
                 // Check if triangle
                 if ((grandparent.right === parentNode) === (parentNode.left === node)){
 
-                    var grandparentChild = (grandparent.right === parentNode) ? grandparent.right : grandparent.left;
+                    console.log('*** Perform rotation ***');
 
-                    var nodeNewChild = (grandparent.right === parentNode) ? node.right : node.left;
-                    var nodeOtherChild = (grandparent.right === parentNode) ? node.left : node.right;
+                    var grandparentChild = (grandparent.right === parentNode) ? node.parent.parent.right : node.parent.parent.left;
 
-                    var parentChild = (parentNode.left === node) ? parentNode.left : parentNode.right;
-                    var parentOtherChild = (parentNode.left === node) ? parentNode.right : parentNode.left;                  
+                    var nodeTargetChild = (grandparent.right === parentNode) ? node.right : node.left;
+                    var nodeOldChild = (grandparent.right === parentNode) ? node.right : node.left;
+
+                    var parentChild = (parentNode.left === node) ? node.parent.left : node.parent.right;
+
                     /*
                         1) node takes parent's spot
                             a) grandparent's child
@@ -271,26 +272,16 @@ var RedBlackTree = function(value, color, parent) {
                             c) change parentNode.parent = node
                             d) change parent's child to null
                     */
-                    node.parent = grandparent;
+
+                    node.parent = node.parent.parent;
+                    node.parent.parent = node;
+
                     grandparentChild = node;
+                    parentChild = nodeOldChild;
+                    if (nodeOldChild !== null) nodeOldChild.parent = parent;
+
                     nodeNewChild = parentNode;
-                    parentNode.parent = node;
-                    parentChild = nodeOtherChild;
 
-
-
-
-
-
-                }
-
-                if (uncle !== null && uncle.color === 'red') {
-                    uncle.color = 'black';
-                    node.parent.color = node.parent.color === 'red' ? 'black' : 'red';
-                    if (node.parent.parent.parent !== null) {
-                        node.parent.parent.color = node.parent.parent.color === 'red' ? 'black' : 'red';
-                    }
-                    this.redUncle(node.parent.parent);
                 }
             }
         }
@@ -310,7 +301,17 @@ function testRedBlackTree(count) {
         rbTree.insert(newNode);
     }
     rbTree.print();
+}
 
+function checkRotateTriangle() {
+    var rbTree = RedBlackTree(10);
+    rbTree.insert(20);
+    rbTree.insert(15);
+    rbTree.insert(12);
+    rbTree.insert(17);
+    rbTree.insert(25);
+    rbTree.rotateTriangle(rbTree.right.left);
+    rbTree.print();
 }
 
 /*
