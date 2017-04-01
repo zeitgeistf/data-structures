@@ -26,19 +26,22 @@ var RedBlackTree = function(value, color, parent) {
     bst.value = value;
     bst.left = null;
     bst.right = null;
-    
-    bst.color = (color === null) ? 'black' : color;
-    bst.parent = (parent === null) ? null : parent;
     bst.count = 1;
+    
+    // Red Black Tree
+    bst.color = (color === undefined) ? 'black' : color;
+    bst.parent = (parent === undefined) ? null : parent;
 
     bst.insert = function(newValue){
 
         this.count++;
+
+        // Create new 'red' node
         var newNode = RedBlackTree(newValue, 'red');
 
         if (newValue < this.value) {
             if (this.left === null){
-                newNode.parent = this.left;
+                newNode.parent = this;
                 this.left = newNode;
 
             } else {
@@ -49,7 +52,7 @@ var RedBlackTree = function(value, color, parent) {
 
             if (this.right === null){
 
-                newNode.parent = this.right;
+                newNode.parent = this;
                 this.right = newNode;
 
             } else{
@@ -58,6 +61,8 @@ var RedBlackTree = function(value, color, parent) {
             }
 
         }
+        if (this.parent === null) this.print();
+        this.redUncle(newNode);
 
     };
 
@@ -106,7 +111,7 @@ var RedBlackTree = function(value, color, parent) {
     bst.print = function() {
 
         var depth = 0;
-        var printObj = [['[' + this.value + ']']];
+        var printObj = [['[' + this.value + '|' + this.color[0] + ']']];
 
         var addTrees = [this.left, this.right];
 
@@ -119,7 +124,7 @@ var RedBlackTree = function(value, color, parent) {
                 } else {
                     var space = '';
                     if (x.value < 10) space = ' ';
-                    addNodes.push('[' + space + x.value + ']');
+                    addNodes.push('[' + space + x.value + '|' + x.color[0] + ']');
                 }
             });
 
@@ -213,6 +218,84 @@ var RedBlackTree = function(value, color, parent) {
         
     }
 
+    bst.redUncle = function(node) {
+        if (node.parent !== null && node.color === 'red') {
+            if (node.parent.parent !== null) {
+
+                var uncle = node.parent.parent.left;
+
+                if (node.parent.parent.left === node.parent) {
+                    uncle = node.parent.parent.right;
+                }
+
+                if (uncle !== null && uncle.color === 'red') {
+                    uncle.color = 'black';
+                    node.parent.color = node.parent.color === 'red' ? 'black' : 'red';
+                    if (node.parent.parent.parent !== null) {
+                        node.parent.parent.color = node.parent.parent.color === 'red' ? 'black' : 'red';
+                    }
+                    this.redUncle(node.parent.parent);
+                }
+            }
+        }
+    }
+
+    bst.rotateTriangle = function(node) {
+        if (node.parent !== null && node.color === 'red') {
+
+            var parentNode = node.parent;
+
+            if (parentNode.parent !== null) {
+
+                var grandparent = parentNode.parent;
+
+                var uncle = grandparent.left;
+
+                if (grandparent.left === parentNode) {
+                    uncle = grandparent.right;
+            
+                // Check if triangle
+                if ((grandparent.right === parentNode) === (parentNode.left === node)){
+
+                    var grandparentChild = (grandparent.right === parentNode) ? grandparent.right : grandparent.left;
+
+                    var nodeNewChild = (grandparent.right === parentNode) ? node.right : node.left;
+                    var nodeOtherChild = (grandparent.right === parentNode) ? node.left : node.right;
+
+                    var parentChild = (parentNode.left === node) ? parentNode.left : parentNode.right;
+                    var parentOtherChild = (parentNode.left === node) ? parentNode.right : parentNode.left;                  
+                    /*
+                        1) node takes parent's spot
+                            a) grandparent's child
+                            b) change node's child
+                            c) change parentNode.parent = node
+                            d) change parent's child to null
+                    */
+                    node.parent = grandparent;
+                    grandparentChild = node;
+                    nodeNewChild = parentNode;
+                    parentNode.parent = node;
+                    parentChild = nodeOtherChild;
+
+
+
+
+
+
+                }
+
+                if (uncle !== null && uncle.color === 'red') {
+                    uncle.color = 'black';
+                    node.parent.color = node.parent.color === 'red' ? 'black' : 'red';
+                    if (node.parent.parent.parent !== null) {
+                        node.parent.parent.color = node.parent.parent.color === 'red' ? 'black' : 'red';
+                    }
+                    this.redUncle(node.parent.parent);
+                }
+            }
+        }
+    }
+
     return bst;
 
 };
@@ -227,6 +310,7 @@ function testRedBlackTree(count) {
         rbTree.insert(newNode);
     }
     rbTree.print();
+
 }
 
 /*

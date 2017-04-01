@@ -85,7 +85,6 @@ describe('red-blackTree', function() {
       redBlackTree.insert(i);
     }
 
-    redBlackTree.print();
     expect(((redBlackTree.longestDepth() + 1) / (redBlackTree.shortestDepth() + 1))  < 2).to.equal(true);
 
   });
