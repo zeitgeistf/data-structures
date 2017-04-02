@@ -126,27 +126,56 @@ Graph.prototype.forEachNode = function(cb) {
 
 Graph.prototype.print = function() {
 	
+	var colSize = 7;
+
 	var arr = [] ;
 	for (var key in this.nodes) {
 		arr.push(key);
 	}
 
-	console.log(arr.join(' | '));
+	var header = arr.slice(0);
+	header.unshift('  ');
 
-	var output = '';
+	function fixSpacing(array) {
+
+		var stringArr = array.map(x => x.toString());
+
+		stringArr = stringArr.map(x => {
+			var spacing = Math.floor((colSize - x.length) / 2);
+			var spacer = Array(spacing).fill(' ').join('');
+			x = spacer + x + spacer;
+			while (x.length < colSize) {
+				x += ' ';
+			}  
+			return x;
+		});
+
+		return stringArr;
+	};
+
+	var colHeader = fixSpacing(header);
+	console.log(colHeader.join('|'));
+
+	var colLine = Array(colHeader.length).fill('===');
+	console.log(fixSpacing(colLine).join('|'));
+
+	var output = [];
+
 	for (var key in this.nodes) {
-		output = key + ' : ';
+
+		output.push('[ ' + key + ' ]');
 
 		for (var i = 0; i < arr.length; i++){
 			if(this.nodes[key].includes(eval(arr[i]))) {
-				output += 'X';
+				output.push('X');
 			}
 			else {
-				output += ' ';
+				output.push('-');
 			}
 		}
-		console.log(output);
-		output = '';
+
+		console.log(fixSpacing(output).join('|'));
+		output = [];
 	}
 
 };
@@ -181,7 +210,7 @@ Graph.prototype.print = function() {
 			y = Math.floor(Math.random() * count); 			
  		}
 
- 		g.addEdge(x,y);
+ 		g.addEdge(array[x],array[y]);
 
  	}
 
